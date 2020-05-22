@@ -34,7 +34,8 @@ function render_age_graph(data) {
 
     const xScale = d3.scaleBand()
       .range([0, width])
-      .domain(data.map(function(d) { return d.key;}))
+      //.domain(data.map(function(d) { return d.key;}))
+      .domain(['18-21', '22-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-69', '70+'])
       .padding(0.2);
 
     const yScale = d3.scaleLinear()
@@ -96,7 +97,7 @@ function render_age_graph(data) {
         .attr('height', 0)
         .attr('width', xScale.bandwidth())
         .on('mouseenter', function (actual, i) {
-            d3.selectAll('.value')
+            d3.selectAll('.age_value')
                 .attr('opacity', 0);
 
             d3.select(this)
@@ -130,7 +131,7 @@ function render_age_graph(data) {
                 });
         })
         .on('mouseleave', function () {
-            d3.selectAll('.value')
+            d3.selectAll('.age_value')
                 .attr('opacity', 1)
 
             d3.select(this)
@@ -150,7 +151,7 @@ function render_age_graph(data) {
 
     barGroups
       .append('text')
-      .attr('class', 'value')
+      .attr('class', 'age_value')
       .attr('x', (a) => xScale(a.key) + xScale.bandwidth() / 2)
       .attr('y', (a) => yScale(a.value * 100) - 5)
       .attr('text-anchor', 'middle')
@@ -181,10 +182,32 @@ function render_age_graph(data) {
       .text('Age Group')
 
     ageSVG.selectAll('.bar')
-        .transition()
+        .transition("makeBars")
         .duration(1000)
         .attr("y", function(d) {
             return yScale(d.value * 100);
         })
         .attr("height", (g) => height - yScale(g.value * 100));
+
+
+
+    barGroups.append("g")
+    .attr("class", "brush")
+    .call(d3.brushX()
+        .extent([[0, height - 20], [xScale.range()[1] , height]])
+        .on("end", brushended));
+
+    function brushended() {
+      if (!d3.event.sourceEvent) return; // Only transition after input.
+      if (!d3.event.selection) return; // Ignore empty selections.
+      var selection = d3.event.selection;
+      var selected = xScale
+                    .domain()
+                    .filter(function(d){
+                        return (selection[0] <= xScale(d) + 50) && (xScale(d) <= selection[1])
+                    });
+      var filters = data.filter(function(d) { return selected.includes(d.key); } );
+      toggleFilter('age_group', filters);
+    }
+
 }

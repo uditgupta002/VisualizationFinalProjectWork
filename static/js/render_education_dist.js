@@ -125,7 +125,7 @@ function render_education_graph(data) {
         });
 
     svg.selectAll('.bar')
-        .transition()
+        .transition("makeBars")
         .duration(1000)
         .attr("y", function(d) {
             return yScale(d.value * 100);
@@ -156,5 +156,24 @@ function render_education_graph(data) {
       .attr('text-anchor', 'middle')
       .text('Degree Type')
 
+
+    barGroups.append("g")
+    .attr("class", "brush")
+    .call(d3.brushX()
+        .extent([[0, height - 20], [xScale.range()[1] , height]])
+        .on("end", brushended));
+
+    function brushended() {
+      if (!d3.event.sourceEvent) return; // Only transition after input.
+      if (!d3.event.selection) return; // Ignore empty selections.
+      var selection = d3.event.selection;
+      var selected = xScale
+                    .domain()
+                    .filter(function(d){
+                        return (selection[0] <= xScale(d)) && (xScale(d) <= selection[1])
+                    });
+      var filters = data.filter(function(d) { return selected.includes(d.key); } );
+      toggleFilter('education', filters);
+    }
 
 }

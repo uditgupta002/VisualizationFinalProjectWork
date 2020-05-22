@@ -416,12 +416,21 @@ button.bg-darker:focus
 .mt--6, .my--6 {
     margin-top: -5.5rem !important;
 }
+.nav-text {
+   color: #fff;
+   font: 25px sans-serif;
+}
+
+.rect:hover{
+  stroke-width: 3px !important;
+  opacity: 1 !important;
+ }
 
 .tooltip {
   position: absolute;
   text-align: center;
   width: 120px;
-  height: 45px;
+  height: 50px;
   padding: 2px;
   font: 12px sans-serif;
   background: lightsteelblue;
@@ -430,11 +439,13 @@ button.bg-darker:focus
   pointer-events: none;
 }
 
-
-
-
 .bar {
   fill: #80cbc4;
+}
+
+text.title-text {
+  font-size: 15px;
+  fill: #000;
 }
 
 text {

@@ -2,12 +2,14 @@
 //Global list for all the views to reference
 var filters_list = {};
 var current_data = null;
-var backend_data_url = "http://localhost:5000/data";
+var backend_data_url = "/data";
 
 // On start of the application fetch the data and then render all the views.
 window.onload = function() {
     fetchAndRender();
 };
+
+$('#reset_button').click(function(event) { filters_list = {}; fetchAndRender(); });
 
 //Filter logic to be called by other views
 function toggleFilter(key, valueList) {
@@ -61,13 +63,17 @@ function refreshViews(updatedDataJson) {
     render_education_graph(updatedDataJson['education']);
     render_age_graph(updatedDataJson['age_group']);
     render_job_title_dist(updatedDataJson['job_title']);
-    render_primary_tool_dist(updatedDataJson['primary_tool_used']);
-
+    //render_primary_tool_dist(updatedDataJson['primary_tool_used']);
+    render_viz_lib_dist(updatedDataJson['viz_frameworks'])
+    render_ml_lib_dist(updatedDataJson['ml_frameworks'])
+    render_country_chart(updatedDataJson['country'])
 
     //Refresh the Summary headers
     $('#total_responders_count').html(updatedDataJson['total_responders']);
     $('#average_experience_level').html(updatedDataJson['years_in_ml']);
     $('#average_company_size').html(updatedDataJson['size_of_company']);
+    //$('#average_salary_bracket').html(updatedDataJson['current_salary']);
+    $('#average_skill_level').html(updatedDataJson['primary_tool_used']);
 
     //Animate the numbers
     $('.summary_numbers').each(function () {
